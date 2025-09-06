@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "Página principal";
+}
+
+<header>
+    <h1>Veterinaria Tu Mascota Feliz</h1>
+    <p>Cuidamos lo que más amas</p>
+</header>
+
+<section class="hero">
+    <img src="https://thvnext.bing.com/th/id/OIP.zb5OfLWu-DOi8_AmBYhj3AHaGg?w=172&h=180&c=7&r=0&o=7&cb=ucfimg2&pid=1.7&rm=3&ucfimg=1" alt="Perro feliz en la clínica" style="width: 100%; max-width: 250px; border-radius: 12px;">
+    <h1>Bienvenido a nuestra clínica</h1>
+</section>
+
+<section class="services">
+    <div class="card">
+        <h2>Consulta General</h2>
+        <p>Evaluación completa para tu mascota con seguimiento personalizado.</p>
+    </div>
+    <div class="card">
+        <h2>Vacunación</h2>
+        <p>Protege a tu compañero con nuestro esquema de vacunas actualizado.</p>
+    </div>
+    <div class="card">
+        <h2>Estética Canina</h2>
+        <p>Baños, cortes y cuidado estético con productos certificados.</p>
+    </div>
+</section>
+
+<footer>
+    <p>&copy; 2025 Veterinaria Tu Mascota Feliz. Todos los derechos reservados.</p>
+</footer>
+
+<style>
+    header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+    .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+    }
+    .hero img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .hero h1 {
+        margin-top: 1rem;
+        font-size: 2.5rem;
+        color: #4CAF50;
+    }
+    .services {
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+    .card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+    }
+</style>
+
