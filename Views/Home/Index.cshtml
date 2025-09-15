@@ -1,4 +1,8 @@
-﻿@{
+﻿﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
     ViewData["Title"] = "Página principal";
 }
 
@@ -7,29 +11,56 @@
     <p>Cuidamos lo que más amas</p>
 </header>
 
-<section class="hero">
-    <img src="https://thvnext.bing.com/th/id/OIP.zb5OfLWu-DOi8_AmBYhj3AHaGg?w=172&h=180&c=7&r=0&o=7&cb=ucfimg2&pid=1.7&rm=3&ucfimg=1" alt="Perro feliz en la clínica" style="width: 100%; max-width: 250px; border-radius: 12px;">
-    <h1>Bienvenido a nuestra clínica</h1>
-</section>
+ @if (SignInManager.IsSignedIn(User))  
+  {
+    <section class="hero">        
+        <h2>Listado de operaciones disponibles</h2>
+    </section>
 
-<section class="services">
-    <div class="card">
-        <h2>Consulta General</h2>
-        <p>Evaluación completa para tu mascota con seguimiento personalizado.</p>
-    </div>
-    <div class="card">
-        <h2>Vacunación</h2>
-        <p>Protege a tu compañero con nuestro esquema de vacunas actualizado.</p>
-    </div>
-    <div class="card">
-        <h2>Estética Canina</h2>
-        <p>Baños, cortes y cuidado estético con productos certificados.</p>
-    </div>
-</section>
+    <a asp-controller="Home" asp-action="ListaClientes" style="text-decoration: none;">
+        <section class="services">
+            <div class="card">
+                <h2>Lista de clientes</h2>
+                <p>Operaciones CRUD para los clientes.</p>
+            </div>
+        </section>
+    </a>
 
-<footer>
-    <p>&copy; 2025 Veterinaria Tu Mascota Feliz. Todos los derechos reservados.</p>
-</footer>
+    <a asp-controller="Home" asp-action="ListaMascotas" style="text-decoration: none;">
+        <section class="services">
+            <div class="card">
+                <h2>Lista de mascotas</h2>
+                <p>Operaciones CRUD para las mascotas.</p>
+            </div>
+        </section>
+    </a>
+  }
+else
+{
+    <section class="hero">
+        <img src="https://thvnext.bing.com/th/id/OIP.zb5OfLWu-DOi8_AmBYhj3AHaGg?w=172&h=180&c=7&r=0&o=7&cb=ucfimg2&pid=1.7&rm=3&ucfimg=1" alt="Perro feliz en la clínica" style="width: 100%; max-width: 250px; border-radius: 12px;">
+        <h1>Bienvenido a nuestra clínica</h1>
+    </section>
+
+    <section class="services">
+        <div class="card">
+            <h2>Consulta General</h2>
+            <p>Evaluación completa para tu mascota con seguimiento personalizado.</p>
+        </div>
+        <div class="card">
+            <h2>Vacunación</h2>
+            <p>Protege a tu compañero con nuestro esquema de vacunas actualizado.</p>
+        </div>
+        <div class="card">
+            <h2>Estética Canina</h2>
+            <p>Baños, cortes y cuidado estético con productos certificados.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Veterinaria Tu Mascota Feliz. Todos los derechos reservados.</p>
+    </footer>
+}
 
 <style>
     header {
@@ -50,7 +81,7 @@
         border-radius: 12px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-    .hero h1 {
+    .hero h1, h2 {
         margin-top: 1rem;
         font-size: 2.5rem;
         color: #4CAF50;

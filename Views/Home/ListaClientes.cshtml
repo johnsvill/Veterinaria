@@ -1,0 +1,269 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+
+@model IEnumerable<Veterinaria.Models.ListaPersonas>
+<header>
+    <h1>Veterinaria Tu Mascota Feliz</h1>
+    <p>Cuidamos lo que más amas</p>
+</header>
+<br />
+<button type="button" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#modalAgregarPersona">
+    <i class="fas fa-user-plus"></i> Agregar persona
+</button>
+<table class="table text-center text-bold table-bordered table-hover table-sm table-responsive-xl pre-scrollable">
+    <thead class="thead-dark">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.First().IdPersona)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Nombre)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Direccion)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Telefono)</th>
+            <th>@Html.DisplayNameFor(model => model.First().Email)</th>
+            <th>@Html.DisplayNameFor(model => model.First().DPI)</th>
+            <th>@Html.DisplayNameFor(model => model.First().NIT)</th>
+            <th>@Html.DisplayNameFor(model => model.First().FechaNac)</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cliente in Model)
+        {
+            <tr>
+                <td>@cliente.IdPersona</td>
+                <td>@cliente.Nombre</td>
+                <td>@cliente.Direccion</td>
+                <td>@cliente.Telefono</td>
+                <td>@cliente.Email</td>
+                <td>@cliente.DPI</td>
+                <td>@cliente.NIT</td>
+                <td>@cliente.FechaNac.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <!-- Botón Editar -->
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditar_@cliente.IdPersona">
+                        <i class="fas fa-pencil-alt"></i> Editar
+                    </button>
+
+                    <!-- Botón Eliminar -->
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminar_@cliente.IdPersona">
+                        <i class="fas fa-trash-alt"></i> Eliminar
+                    </button>
+
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@foreach (var cliente in Model)
+{
+    <!-- Modal Editar -->
+    <div class="modal fade" id="modalEditar_@cliente.IdPersona" tabindex="-1" aria-labelledby="editarLabel_@cliente.IdPersona" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form asp-action="EditarListaPersonas" method="post">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title" id="editarLabel_@cliente.IdPersona">Editar Cliente: @cliente.Nombre</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="IdPersona" value="@cliente.IdPersona" />
+
+                        <div class="mb-3">
+                            <label class="form-label">ID Persona</label>
+                            <input type="text" class="form-control" value="@cliente.IdPersona" readonly />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" name="Nombre" class="form-control" value="@cliente.Nombre" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Dirección</label>
+                            <input type="text" name="Direccion" class="form-control" value="@cliente.Direccion" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Teléfono</label>
+                            <input type="text" name="Telefono" class="form-control" value="@cliente.Telefono" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="Email" class="form-control" value="@cliente.Email" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">DPI</label>
+                            <input type="text" name="DPI" class="form-control" value="@cliente.DPI" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">NIT</label>
+                            <input type="text" name="NIT" class="form-control" value="@cliente.NIT" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fecha de Nacimiento</label>
+                            <input type="date" name="FechaNac" class="form-control" value="@cliente.FechaNac.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminar -->
+    <div class="modal fade" id="modalEliminar_@cliente.IdPersona" tabindex="-1" aria-labelledby="eliminarLabel_@cliente.IdPersona" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="EliminarCliente" method="post">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title" id="eliminarLabel_@cliente.IdPersona">¿Eliminar cliente?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="IdPersona" value="@cliente.IdPersona" />
+                        <p>¿Estás seguro que deseas eliminar a <strong>@cliente.Nombre</strong>?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="modal fade" id="modalAgregarPersona" tabindex="-1" aria-labelledby="agregarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form asp-action="CrearPersona" method="post">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="agregarLabel">Registrar nueva persona</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="Nombre" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Dirección</label>
+                        <input type="text" name="Direccion" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Teléfono</label>
+                        <input type="text" name="Telefono" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="Email" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">DPI</label>
+                        <input type="text" name="DPI" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">NIT</label>
+                        <input type="text" name="NIT" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Fecha de nacimiento</label>
+                        <input type="date" name="FechaNac" class="form-control" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<style>
+    /* Encabezado verde */
+    header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Título de sección */
+    .hero h1 {
+        margin-top: 2rem;
+        font-size: 2rem;
+        color: #4CAF50;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    /* Tabla personalizada */
+    .table {
+        font-size: 0.95rem;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .table thead.thead-dark th {
+            background-color: #388E3C;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+    /* Botones CRUD */
+    .btn-primary {
+        background-color: #2E7D32;
+        border-color: #2E7D32;
+    }
+
+        .btn-primary:hover {
+            background-color: #1B5E20;
+            border-color: #1B5E20;
+        }
+
+    .btn-danger {
+        background-color: #C62828;
+        border-color: #C62828;
+    }
+
+        .btn-danger:hover {
+            background-color: #B71C1C;
+            border-color: #B71C1C;
+        }
+
+    /* Caption personalizado */
+    caption {
+        caption-side: top;
+        text-align: center;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    /* Footer */
+    footer {
+        background-color: #2E7D32;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        margin-top: 2rem;
+        font-size: 0.9rem;
+    }
+
+    .table thead.thead-dark th {
+        background-color: #388E3C; /* verde */
+        color: white;
+    }
+
+</style>
+

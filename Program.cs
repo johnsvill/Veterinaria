@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Veterinaria.Data;
+using Veterinaria.Repositorio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews()
     .AddRazorRuntimeCompilation();
+
+builder.Services.AddTransient<IMantenimientoClientes, MantenimientoClientes>();
+builder.Services.AddTransient<IMantenimientoMascotas, MantenimientoMascotas>();
 
 var app = builder.Build();
 
