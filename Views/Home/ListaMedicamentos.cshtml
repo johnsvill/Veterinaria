@@ -1,0 +1,276 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+
+@model List<ListaProductosInventario>
+
+@{
+    var hoy = DateTime.Today;
+    var añoActual = hoy.Year;
+}
+<div class="container mt-4">
+    <div class="mb-3">
+        <label for="selectMascota" class="form-label bg-dark text-white px-2 py-1 rounded">Seleccionar mascota</label>
+        <select class="form-select" id="selectMascota">
+            <option value="">-- Selecciona una mascota --</option>
+            <option value="1">Max</option>
+            <option value="2">Luna</option>
+            <option value="3">Rocky</option>
+            <option value="4">Bella</option>
+            <option value="5">Toby</option>
+            <option value="6">Simba</option>
+            <option value="7">Nala</option>
+            <option value="8">Coco</option>
+            <option value="9">Bruno</option>
+            <option value="10">Maya</option>
+        </select>
+    </div>
+</div>
+@if (TempData["CompraExitosa"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["CompraExitosa"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+@if (TempData["ErrorCompra"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["ErrorCompra"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+}
+
+<div class="container mt-4">
+    <h4 class="mb-3">Inventario de Medicamentos</h4>
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Medicamento</th>
+                <th>Cantidad</th>
+                <th>Fecha de Vencimiento</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var vencimiento = item.FechaVencimiento;
+                string badgeClass = vencimiento < hoy ? "bg-danger"
+                : vencimiento.Year == añoActual ? "bg-warning text-dark"
+                : "bg-success";
+
+                <tr>
+                    <td>@item.Medicamento</td>
+                    <td>
+                        @{
+                            var cantidad = item.Cantidad;
+                            badgeClass = cantidad == 0 ? "bg-danger"
+                            : cantidad <= 5 ? "bg-secondary"
+                            : cantidad <= 30 ? "bg-primary"
+                            : "bg-success";
+                        }
+                        <span class="badge @badgeClass">@cantidad</span>
+                    </td>
+                    <td>
+                        <span class="badge @badgeClass">
+                            @vencimiento.ToString("dd/MM/yyyy")
+                        </span>
+                    </td>
+                    <td>
+                        @if (item.Cantidad == 0)
+                        {
+                            <button class="btn btn-danger btn-sm text-white" disabled>No disponible</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalPedido"
+                                    data-idmedicamento="@item.IdMedicamento"
+                                    data-medicamento="@item.Medicamento"
+                                    data-cantidad="@item.Cantidad"
+                                    data-fecha="@item.FechaVencimiento.ToString("dd/MM/yyyy")">
+                                Comprar
+                            </button>
+                        }
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="modalPedido" tabindex="-1" aria-labelledby="modalPedidoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="RegistrarCompraMedicamento" method="post" id="formPedido">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalPedidoLabel">Solicitar Medicamento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="IdMedicamento" id="inputIdMedicamento" />
+                    <input type="hidden" name="IdMascota" id="inputIdMascota" />
+
+                    <p><strong>Medicamento:</strong> <span id="nombreMedicamento"></span></p>
+                    <p><strong>Disponible:</strong> <span id="cantidadDisponible"></span></p>
+                    <p><strong>Vencimiento:</strong> <span id="fechaVencimiento"></span></p>
+
+                    <div class="mb-3">
+                        <label for="cantidadSolicitada" class="form-label">Cantidad a solicitar</label>
+                        <input type="number" class="form-control" name="Cantidad" id="cantidadSolicitada" min="1" required>
+                    </div>
+
+                    <div class="alert alert-danger d-none" id="alertaStock">
+                        No hay suficiente stock para realizar el pedido.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Confirmar pedido</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modalPedido = document.getElementById('modalPedido');
+            let cantidadActual = 0;
+
+            modalPedido.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                const medicamento = button.getAttribute('data-medicamento');
+                const cantidad = parseInt(button.getAttribute('data-cantidad'));
+                const fecha = button.getAttribute('data-fecha');
+                const idMedicamento = button.getAttribute('data-idmedicamento');
+
+                const selectMascota = document.getElementById('selectMascota');
+                const idMascota = selectMascota ? selectMascota.value : '';
+
+                cantidadActual = cantidad;
+
+                // Asignar valores al formulario
+                document.getElementById('nombreMedicamento').textContent = medicamento;
+                document.getElementById('cantidadDisponible').textContent = cantidad;
+                document.getElementById('fechaVencimiento').textContent = fecha;
+
+                document.getElementById('inputIdMedicamento').value = idMedicamento;
+                document.getElementById('inputIdMascota').value = idMascota;
+                document.getElementById('cantidadSolicitada').value = '';
+                document.getElementById('alertaStock').classList.add('d-none');
+            });
+
+            const form = document.getElementById('formPedido');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    const solicitada = parseInt(document.getElementById('cantidadSolicitada').value);
+                    const idMascota = document.getElementById('inputIdMascota').value;
+
+                    if (!idMascota) {
+                        e.preventDefault();
+                        alert("Debes seleccionar una mascota antes de realizar el pedido.");
+                        return;
+                    }
+
+                    if (solicitada > cantidadActual) {
+                        e.preventDefault();
+                        document.getElementById('alertaStock').classList.remove('d-none');
+                    }
+                });
+            } else {
+                console.warn("Formulario con id 'formPedido' no encontrado.");
+            }
+        });
+    </script>
+}
+
+<style>
+    /* Encabezado verde */
+    header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Título de sección */
+    .hero h1 {
+        margin-top: 2rem;
+        font-size: 2rem;
+        color: #4CAF50;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    /* Tabla personalizada */
+    .table {
+        font-size: 0.95rem;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .table thead.thead-dark th {
+            background-color: #388E3C;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+    /* Botones CRUD */
+    .btn-primary {
+        background-color: #2E7D32;
+        border-color: #2E7D32;
+    }
+
+        .btn-primary:hover {
+            background-color: #1B5E20;
+            border-color: #1B5E20;
+        }
+
+    .btn-danger {
+        background-color: #C62828;
+        border-color: #C62828;
+    }
+
+        .btn-danger:hover {
+            background-color: #B71C1C;
+            border-color: #B71C1C;
+        }
+
+    /* Caption personalizado */
+    caption {
+        caption-side: top;
+        text-align: center;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    /* Footer */
+    footer {
+        background-color: #2E7D32;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        margin-top: 2rem;
+        font-size: 0.9rem;
+    }
+
+    .table thead.thead-dark th {
+        background-color: #388E3C; /* verde */
+        color: white;
+    }
+
+</style>

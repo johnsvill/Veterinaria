@@ -1,0 +1,212 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+
+@model IEnumerable<FacturaDetalle>
+
+@{
+    ViewData["Title"] = "Listado de Facturas";
+}
+
+<div class="container mt-4">
+    <h4 class="mb-3">Listado de Facturas</h4>
+
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th># Factura</th>
+                <th>Cliente</th>
+                <th>Dirección</th>
+                <th>Teléfono</th>
+                <th>Medicamento</th>
+                <th>Precio Unitario</th>
+                <th>Cantidad</th>
+                <th>Total</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.IdFactura</td>
+                    <td>@item.NombreCompleto</td>
+                    <td>@item.Direccion</td>
+                    <td>@item.Telefono</td>
+                    <td>@item.Medicamento</td>
+                    <td>Q @item.PrecioUnitario</td>
+                    <td>@item.Cantidad</td>
+                    <td><strong>Q @item.Total</strong></td>
+                    <td>
+                        <button class="btn btn-sm btn-info text-white"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDetalleFactura"
+                                data-idfactura="@item.IdFactura"
+                                data-cliente="@item.NombreCompleto"
+                                data-direccion="@item.Direccion"
+                                data-telefono="@item.Telefono"
+                                data-medicamento="@item.Medicamento"
+                                data-precio="@item.PrecioUnitario"
+                                data-cantidad="@item.Cantidad"
+                                data-total="@item.Total">
+                            Ver detalle
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal para detalle de factura -->
+<div class="modal fade" id="modalDetalleFactura" tabindex="-1" aria-labelledby="modalDetalleFacturaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalDetalleFacturaLabel">Detalle de Factura</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Factura #</dt>
+                    <dd class="col-sm-9" id="detalleIdFactura"></dd>
+
+                    <dt class="col-sm-3">Cliente</dt>
+                    <dd class="col-sm-9" id="detalleCliente"></dd>
+
+                    <dt class="col-sm-3">Dirección</dt>
+                    <dd class="col-sm-9" id="detalleDireccion"></dd>
+
+                    <dt class="col-sm-3">Teléfono</dt>
+                    <dd class="col-sm-9" id="detalleTelefono"></dd>
+
+                    <dt class="col-sm-3">Medicamento</dt>
+                    <dd class="col-sm-9" id="detalleMedicamento"></dd>
+
+                    <dt class="col-sm-3">Precio Unitario</dt>
+                    <dd class="col-sm-9" id="detallePrecio"></dd>
+
+                    <dt class="col-sm-3">Cantidad</dt>
+                    <dd class="col-sm-9" id="detalleCantidad"></dd>
+
+                    <dt class="col-sm-3">Total</dt>
+                    <dd class="col-sm-9 fw-bold text-success" id="detalleTotal"></dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <form asp-action="GenerarFacturaPdf" method="post">
+                    <input type="hidden" name="IdFactura" id="inputIdFacturaPdf" />
+                    <button type="submit" class="btn btn-danger">
+                        Generar PDF
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const modal = document.getElementById('modalDetalleFactura');
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+
+            document.getElementById('detalleIdFactura').textContent = button.getAttribute('data-idfactura');
+            document.getElementById('detalleCliente').textContent = button.getAttribute('data-cliente');
+            document.getElementById('detalleDireccion').textContent = button.getAttribute('data-direccion');
+            document.getElementById('detalleTelefono').textContent = button.getAttribute('data-telefono');
+            document.getElementById('detalleMedicamento').textContent = button.getAttribute('data-medicamento');
+            document.getElementById('detallePrecio').textContent = "Q" + button.getAttribute('data-precio');
+            document.getElementById('detalleCantidad').textContent = button.getAttribute('data-cantidad');
+            document.getElementById('detalleTotal').textContent = "Q" + button.getAttribute('data-total');
+
+            document.getElementById('inputIdFacturaPdf').value = button.getAttribute('data-idfactura');
+        });
+    </script>
+}
+
+<style>
+    /* Encabezado verde */
+    header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* Título de sección */
+    .hero h1 {
+        margin-top: 2rem;
+        font-size: 2rem;
+        color: #4CAF50;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    /* Tabla personalizada */
+    .table {
+        font-size: 0.95rem;
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+        .table thead.thead-dark th {
+            background-color: #388E3C;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .table tbody td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+    /* Botones CRUD */
+    .btn-primary {
+        background-color: #2E7D32;
+        border-color: #2E7D32;
+    }
+
+        .btn-primary:hover {
+            background-color: #1B5E20;
+            border-color: #1B5E20;
+        }
+
+    .btn-danger {
+        background-color: #C62828;
+        border-color: #C62828;
+    }
+
+        .btn-danger:hover {
+            background-color: #B71C1C;
+            border-color: #B71C1C;
+        }
+
+    /* Caption personalizado */
+    caption {
+        caption-side: top;
+        text-align: center;
+        padding: 1rem;
+        font-size: 1rem;
+    }
+
+    /* Footer */
+    footer {
+        background-color: #2E7D32;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+        margin-top: 2rem;
+        font-size: 0.9rem;
+    }
+
+    .table thead.thead-dark th {
+        background-color: #388E3C; /* verde */
+        color: white;
+    }
+
+</style>

@@ -1,0 +1,165 @@
+﻿<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+﻿
+
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Página principal";
+}
+
+<header>
+    <h1>Veterinaria Tu Mascota Feliz</h1>
+    <p>Cuidamos lo que más amas</p>
+</header>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <section class="hero">
+        <h2>Listado de operaciones disponibles</h2>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-4">
+                <a asp-controller="Home" asp-action="ListaClientes" class="text-decoration-none">
+                    <div class="card d-flex flex-row align-items-center gap-3 p-3">
+                        <i class="bi bi-person-lines-fill fs-1 text-success"></i>
+                        <div>
+                            <h5 class="mb-1">Lista de clientes</h5>
+                            <p class="mb-0">Operaciones CRUD para los clientes.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <a asp-controller="Home" asp-action="ListaMascotas" class="text-decoration-none">
+                    <div class="card d-flex flex-row align-items-center gap-3 p-3">
+                        <i class="bi bi-paw fs-1 text-primary"></i>
+                        <div>
+                            <h5 class="mb-1">Lista de mascotas</h5>
+                            <p class="mb-0">Operaciones CRUD para las mascotas.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <a asp-controller="Home" asp-action="CalendarioCitas" class="text-decoration-none">
+                    <div class="card d-flex flex-row align-items-center gap-3 p-3">
+                        <i class="bi bi-calendar-event fs-1 text-warning"></i>
+                        <div>
+                            <h5 class="mb-1">Calendario de citas</h5>
+                            <p class="mb-0">Visualizar citas pasadas y pendientes.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <a asp-controller="Home" asp-action="ListaMedicamentos" class="text-decoration-none">
+                    <div class="card d-flex flex-row align-items-center gap-3 p-3">
+                        <i class="bi bi-capsule-pill fs-1 text-danger"></i>
+                        <div>
+                            <h5 class="mb-1">Inventario de medicamentos</h5>
+                            <p class="mb-0">Productos y cantidades de medicamentos.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-6 mb-4">
+                <a asp-controller="Home" asp-action="ListaFacturas" class="text-decoration-none">
+                    <div class="card d-flex flex-row align-items-center gap-3 p-3">
+                        <i class="bi bi-receipt fs-1 text-dark"></i>
+                        <div>
+                            <h5 class="mb-1">Módulo de facturas</h5>
+                            <p class="mb-0">Facturas con su detalle y PDF.</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+}
+
+else
+{
+    <section class="hero">
+        <img src="https://thvnext.bing.com/th/id/OIP.zb5OfLWu-DOi8_AmBYhj3AHaGg?w=172&h=180&c=7&r=0&o=7&cb=ucfimg2&pid=1.7&rm=3&ucfimg=1" alt="Perro feliz en la clínica" style="width: 100%; max-width: 250px; border-radius: 12px;">
+        <h1>Bienvenido a nuestra clínica</h1>
+    </section>
+
+    <section class="services">
+        <div class="card">
+            <h2>Consulta General</h2>
+            <p>Evaluación completa para tu mascota con seguimiento personalizado.</p>
+        </div>
+        <div class="card">
+            <h2>Vacunación</h2>
+            <p>Protege a tu compañero con nuestro esquema de vacunas actualizado.</p>
+        </div>
+        <div class="card">
+            <h2>Estética Canina</h2>
+            <p>Baños, cortes y cuidado estético con productos certificados.</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Veterinaria Tu Mascota Feliz. Todos los derechos reservados.</p>
+    </footer>
+}
+
+<style>
+    header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .hero {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+    }
+
+        .hero img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .hero h1, h2 {
+            margin-top: 1rem;
+            font-size: 2.5rem;
+            color: #4CAF50;
+        }
+
+    .services {
+        padding: 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    footer {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 1rem;
+    }
+</style>
+
+

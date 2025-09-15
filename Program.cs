@@ -18,6 +18,9 @@ builder.Services.AddControllersWithViews()
 
 builder.Services.AddTransient<IMantenimientoClientes, MantenimientoClientes>();
 builder.Services.AddTransient<IMantenimientoMascotas, MantenimientoMascotas>();
+builder.Services.AddTransient<ICalendarioCitas, CalendarioCitas>();
+builder.Services.AddTransient<IMantenimientoInventario, MantenimientoInventario>();
+builder.Services.AddTransient<IFacturas, Facturas>();
 
 var app = builder.Build();
 
@@ -43,7 +46,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=MenuPrincipal}/{id?}");
 app.MapRazorPages();
 
 app.Run();
